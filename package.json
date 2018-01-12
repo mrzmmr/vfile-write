@@ -1,0 +1,42 @@
+{
+  "name": "vfile-write",
+  "version": "1.0.0",
+  "description": "Write vfile to file",
+  "main": "index.js",
+  "scripts": {
+    "lint": "xo --space --no-esnext --fix index.js",
+    "report": "nyc report --reporter=text-lcov | coveralls",
+    "tape": "blue-tape test.js",
+    "pretest": "npm run lint",
+    "test": "nyc npm run tape"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mrzmmr/vfile-write.git"
+  },
+  "keywords": [
+    "vfile",
+    "virtual",
+    "file",
+    "fs",
+    "write"
+  ],
+  "author": "mrzmmr",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mrzmmr/vfile-write/issues"
+  },
+  "homepage": "https://github.com/mrzmmr/vfile-write#readme",
+  "dependencies": {
+    "mkdirp": "^0.5.1",
+    "vfile": "^2.3.0",
+    "vfile-update": "^1.1.0"
+  },
+  "devDependencies": {
+    "blue-tape": "^1.0.0",
+    "coveralls": "^3.0.0",
+    "nyc": "^11.4.1",
+    "rimraf": "^2.6.2",
+    "xo": "^0.18.2"
+  }
+}
