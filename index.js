@@ -5,6 +5,8 @@ var vfile = require('vfile');
 var mkdirp = require('mkdirp');
 
 module.exports = write;
+module.exports.flatten = flatten;
+module.exports.sync = writeSync;
 
 function flatten(file) {
   var flattened;
@@ -105,5 +107,28 @@ function write(file, options, callback) {
         return step();
       });
     });
+  }
+}
+
+function writeSync(file, options) {
+  var current;
+  var files;
+
+  options = options || {};
+  files = flatten(file);
+
+  while (files.length > 0) {
+    current = files.shift();
+
+    if (!current.path) {
+      continue;
+    }
+
+    if (Array.isArray(current.contents)) {
+      mkdirp.sync(current.path, options);
+    } else {
+      mkdirp.sync(current.dirname, options);
+      fs.writeFileSync(current.path, current.contents, options);
+    }
   }
 }

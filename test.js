@@ -57,6 +57,22 @@ tape('vfile-write', function (t) {
   });
 
   t.test('single nested vfile', function (t) {
+    write.sync(update(file))
+
+    var stats = [
+      fs.statSync('./foo/foo.txt'),
+      fs.statSync('./foo/bar/bar.txt'),
+      fs.statSync('./foo/bar/baz')
+    ];
+
+    t.ok(stats[0].isFile());
+    t.ok(stats[1].isFile());
+    t.ok(stats[2].isDirectory());
+    clean();
+    t.end()
+  });
+
+  t.test('single nested vfile', function (t) {
     return write(update(file)).then(function () {
       var stats = [
         fs.statSync('./foo/foo.txt'),
