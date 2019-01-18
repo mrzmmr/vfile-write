@@ -34,28 +34,19 @@ test('vfile-write', t => {
 		}
 	);
 
-	write({path: '1', contents: []}, {mode: 'oops'}, error => {
-		t.equal(
-			error.message,
-			'mode must be an integer',
-			'should catch mkdirp error.'
-		);
-
-		clean('./1');
-	});
-
-	write(
-		{path: '2', contents: '2'},
-		{mode: 'oops'},
-		error => {
-			t.equal(
-				error.message,
-				'mode must be an integer',
-				'should catch mkdirp error.'
-			);
-			clean('./2');
-		}
+	write({path: '1', contents: []}, {mode: 'oops'}).then(
+		() => t.fail('Expected to error.'),
+		error => t.pass('should catch mkdirp error.', error)
 	);
+
+	write({path: '2', contents: '2'}, {mode: 'oops'}, error => {
+		if (error) {
+			t.pass('should catch mkdirp error.', error);
+		} else {
+			t.fail('Expected to error.');
+		}
+		clean('./2');
+	});
 
 	write({path: '3', contents: []}).then(
 		files => {
@@ -158,7 +149,6 @@ test('vfile-write', t => {
 			{path: '7', contents: '7'},
 			{mode: 'oops'}
 		),
-		/mode must be an int/,
 		'should catch mkdirp error.'
 	);
 
