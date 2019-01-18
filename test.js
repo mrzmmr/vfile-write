@@ -1,105 +1,178 @@
 'use strict';
 
-var fs = require('fs');
-var update = require('vfile-update');
-var tape = require('blue-tape');
-var rimraf = require('rimraf');
-var vfile = require('vfile');
-var write = require('./');
+const {statSync, readFileSync} = require('fs');
+const rimraf = require('rimraf');
+const {test} = require('tap');
+const write = require('./lib');
 
-var file = vfile({
-  path: 'foo',
-  contents: [
-    null,
-    vfile({
-      path: 'foo.txt',
-      contents: 'Foo'
-    }),
-    vfile({
-      contents: 'empty'
-    }),
-    vfile({
-      path: 'bar',
-      contents: [
-        vfile({
-          path: 'bar.txt',
-          contents: 'Bar'
-        }),
-        vfile({
-          path: 'baz',
-          contents: []
-        })
-      ]
-    })
-  ]
-});
+const clean = path => {
+	rimraf.sync(path);
+};
 
-function clean() {
-  rimraf.sync('./foo.txt');
-  rimraf.sync('./bar.txt');
-  rimraf.sync('./foo');
-  rimraf.sync('./baz');
-}
+test('vfile-write', t => {
+	t.plan(17);
 
-tape('vfile-write', function (t) {
-  t.test('should fail', function (t) {
-    t.shouldFail(write(), 'bad arguments');
-    t.shouldFail(write({}), 'bad arguments');
-    t.end();
-  });
+	write().then(
+		() => t.fail('Expected to error.'),
+		error => {
+			t.equal(
+				error.message,
+				'Expected a vfile to write.',
+				'should throw with bad file argument.'
+			);
+		}
+	);
 
-  t.throws(function () {
-    write({}, function (err) {
-      if (err) {
-        throw err;
-      }
-    });
-  });
+	write(false).then(
+		() => t.fail('Expected to error.'),
+		error => {
+			t.equal(
+				error.message,
+				'Expected a vfile to write.',
+				'should throw with bad file argument.'
+			);
+		}
+	);
 
-  t.test('single nested vfile', function (t) {
-    write.sync(update(file))
+	write({path: '1', contents: []}, {mode: 'oops'}, error => {
+		t.equal(
+			error.message,
+			'mode must be an integer',
+			'should catch mkdirp error.'
+		);
 
-    var stats = [
-      fs.statSync('./foo/foo.txt'),
-      fs.statSync('./foo/bar/bar.txt'),
-      fs.statSync('./foo/bar/baz')
-    ];
+		clean('./1');
+	});
 
-    t.ok(stats[0].isFile());
-    t.ok(stats[1].isFile());
-    t.ok(stats[2].isDirectory());
-    clean();
-    t.end()
-  });
+	write(
+		{path: '2', contents: '2'},
+		{mode: 'oops'},
+		error => {
+			t.equal(
+				error.message,
+				'mode must be an integer',
+				'should catch mkdirp error.'
+			);
+			clean('./2');
+		}
+	);
 
-  t.test('single nested vfile', function (t) {
-    return write(update(file)).then(function () {
-      var stats = [
-        fs.statSync('./foo/foo.txt'),
-        fs.statSync('./foo/bar/bar.txt'),
-        fs.statSync('./foo/bar/baz')
-      ];
+	write({path: '3', contents: []}).then(
+		files => {
+			t.equal(
+				files.length,
+				1,
+				'should return with array of files.'
+			);
 
-      t.ok(stats[0].isFile());
-      t.ok(stats[1].isFile());
-      t.ok(stats[2].isDirectory());
-      clean();
-    });
-  });
+			t.equal(
+				statSync('./3').isDirectory(),
+				true,
+				'should create directory 3.'
+			);
 
-  t.test('multiple vfiles', function (t) {
-    return write(file).then(function () {
-      var stats = [
-        fs.statSync('./foo.txt'),
-        fs.statSync('./bar.txt'),
-        fs.statSync('./baz')
-      ];
+			clean('./3');
+		},
+		t.fail
+	);
 
-      t.ok(stats[0].isFile());
-      t.ok(stats[1].isFile());
-      t.ok(stats[2].isDirectory());
-      clean();
-    });
-  });
-  t.end();
+	write(
+		{
+			path: '4',
+			contents: [{
+				path: '5',
+				contents: '5'
+			}]
+		}
+	).then(
+		files => {
+			t.equal(
+				files.length,
+				2,
+				'should create 2 files.'
+			);
+			t.equal(
+				statSync('./4').isDirectory(),
+				true,
+				'should create directory 4.'
+			);
+			t.deepEqual(
+				readFileSync('./4/5'),
+				Buffer.from('5'),
+				'should create ./4/5 as buffer by default.'
+			);
+
+			clean('./4');
+		},
+		t.fail
+	);
+
+	write({path: '5', contents: []}, (error, files) => {
+		if (error) {
+			t.fail(error);
+		}
+
+		t.equal(
+			files.length,
+			1,
+			'should create 1 file.'
+		);
+
+		t.equal(
+			statSync('./5').isDirectory(),
+			true,
+			'should create directory 5.'
+		);
+
+		clean('./5');
+	});
+
+	write({path: '6', contents: 'root'}, 'utf-8', (error, files) => {
+		if (error) {
+			t.fail(error);
+		}
+
+		t.equal(
+			files.length,
+			1,
+			'should create 1 file.'
+		);
+
+		clean('./6');
+	});
+
+	t.throws(
+		() => write.sync(),
+		/Expected a vfile to write./,
+		'should throw with bad file argument.'
+	);
+
+	t.throws(
+		() => write.sync(false),
+		/Expected a vfile to write./,
+		'should throw with bad file argument.'
+	);
+
+	t.throws(
+		() => write.sync(
+			{path: '7', contents: '7'},
+			{mode: 'oops'}
+		),
+		/mode must be an int/,
+		'should catch mkdirp error.'
+	);
+
+	t.equal(
+		write.sync({path: '8', contents: []}).length,
+		1,
+		'should create 1 file.'
+	);
+
+	t.equal(
+		statSync('./8').isDirectory(),
+		true,
+		'should create directory 8.'
+	);
+
+	clean('./8');
 });
