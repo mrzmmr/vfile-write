@@ -6,52 +6,52 @@
 
 Writes a [VFile](https://github.com/vfile/vfile) and any vfiles nested in its contents. Write will also create any directories needed as well as the file. Returns a promise or callback. 
 
-## install
+## Install
 
 ```sh
 npm i -S vfile-write
 ```
 
-## usage
+## Usage
+
+The following script:
 
 ```js
-var write = require('vfile-write')
+var write = require('./lib')
 var vfile = require('vfile')
+
 var file = vfile({
-  path: 'foo',
-  contents: [
-    vfile({
-      path: 'foo.txt',
-      contents: 'Foo'
-    }),
-    vfile({
-      path: 'bar',
-      contents: [
-        vfile({
-          path: 'bar.txt',
-          contents: 'Bar'
-        }),
-        vfile('baz')
-      })
-    })
-  })
+	path: 'one',
+	contents: [
+		vfile({
+			path: 'one.txt',
+			contents: 'one'
+		}),
+		vfile({
+			path: 'two',
+			contents: [
+				vfile({
+					path: 'two.txt',
+					contents: 'two'
+				})
+			]
+		})
+	]
 })
 
-write(update(file))
-  .catch(console.err)
+write(file, 'utf-8').catch(console.error)
 ```
 
-outputs:
+Will create the file structure:
 
-```sh
-foo
-  |- foo.txt
-    |- bar
-      |- bar.txt
-      |- baz
+```text
+one
+├── one.txt
+└── two
+    └── two.txt
 ```
 
-## api
+## Api
 
 ### `write(file[, options[, callback]])`
 
@@ -68,7 +68,7 @@ Options to pass to writeFile and/or mkdir.
 #### `callback`?
 `function`
 
-Optional callback function. `callback(err)`
+Optional callback function. `callback(error, files)`
 
 `returns` a promise or callback.
 
@@ -76,9 +76,13 @@ Optional callback function. `callback(err)`
 
 Synchronous version of write.
 
-## related
+## Related
 
-[to-vfile](https://github.com/vfile/to-vfile) - Create a vfile from a file-path
+[vfile-read](https://github.com/mrzmmr/vfile-read)
+
+[vfile-update](https://github.com/mrzmmr/vfile-update)
+
+[to-vfile](https://github.com/vfile/to-vfile)
 
 ## License
 
