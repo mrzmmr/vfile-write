@@ -1,45 +1,45 @@
 {
-  "name": "vfile-write",
-  "version": "1.0.3",
-  "description": "Write vfile to file",
-  "main": "lib/index.js",
-  "files": [
-    "lib"
+	"name": "vfile-write",
+	"version": "1.0.3",
+	"description": "Write vfile to file",
+	"main": "lib/index.js",
+	"files": [
+		"lib"
   ],
   "engines": {
-    "node": ">=6.0"
+	  "node": ">=6.0"
   },
   "scripts": {
-    "xo": "xo --fix",
-    "tap": "tap test.js --100",
-    "report": "nyc report --reporter=text-lcov | coveralls",
-    "test": "npm run xo && npm run tap"
+	  "xo": "xo --fix",
+	  "tap": "tap test.js --100",
+	  "report": "nyc report --reporter=text-lcov | coveralls",
+	  "test": "npm run xo && npm run tap"
   },
   "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mrzmmr/vfile-write.git"
+	  "type": "git",
+	  "url": "git+https://github.com/mrzmmr/vfile-write.git"
   },
   "keywords": [
-    "vfile",
-    "virtual",
-    "file",
-    "fs",
-    "write"
+	  "vfile",
+	  "virtual",
+	  "file",
+	  "fs",
+	  "write"
   ],
   "author": "mrzmmr",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mrzmmr/vfile-write/issues"
+	  "url": "https://github.com/mrzmmr/vfile-write/issues"
   },
   "homepage": "https://github.com/mrzmmr/vfile-write#readme",
   "dependencies": {
-    "mkdirp": "^0.5.1",
-    "vfile-update": "^2.0.0"
+	  "mkdirp": "^0.5.1",
+	  "vfile-update": "^2.0.0"
   },
   "devDependencies": {
-    "coveralls": "^3.0.2",
-    "rimraf": "^2.6.2",
-    "tap": "^12.7.0",
-    "xo": "^0.23.0"
+	  "coveralls": "^3.0.2",
+	  "rimraf": "^2.6.2",
+	  "tap": "^12.7.0",
+	  "xo": "^0.23.0"
   }
 }
