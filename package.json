@@ -13,7 +13,7 @@
 		"xo": "xo --fix",
 		"tap": "tap test.js --100",
 		"report": "nyc report --reporter=text-lcov | coveralls",
-		"test": "npm run xo && npm run tap"
+		"test": "npm run tap"
 	},
 	"repository": {
 		"type": "git",
