@@ -37,9 +37,9 @@
 		"vfile-update": "^2.0.0"
 	},
 	"devDependencies": {
-		"coveralls": "^3.0.2",
+		"coveralls": "^3.0.5",
 		"rimraf": "^2.6.2",
-		"tap": "^14.2.3",
+		"tap": "^14.4.2",
 		"xo": "^0.23.0"
 	}
 }
