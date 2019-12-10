@@ -1,6 +1,6 @@
 {
 	"name": "vfile-write",
-	"version": "1.0.6",
+	"version": "1.0.7",
 	"description": "Write vfile to file",
 	"main": "lib/index.js",
 	"files": [
