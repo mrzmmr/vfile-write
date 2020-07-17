@@ -34,12 +34,12 @@
 	"homepage": "https://github.com/mrzmmr/vfile-write#readme",
 	"dependencies": {
 		"mkdirp": "^0.5.1",
-		"vfile-update": "^2.0.0"
+		"vfile-update": "^2.0.7"
 	},
 	"devDependencies": {
-		"coveralls": "^3.0.5",
-		"rimraf": "^2.6.2",
+		"coveralls": "^3.1.0",
+		"rimraf": "^2.7.1",
 		"tap": "^14.10.7",
-		"xo": "^0.23.0"
+		"xo": "^0.32.1"
 	}
 }
